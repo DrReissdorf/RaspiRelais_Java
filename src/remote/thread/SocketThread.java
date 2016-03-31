@@ -1,7 +1,9 @@
-package remote;
+package remote.thread;
 
 import gpio.GPIO;
 import main.Main;
+import remote.DataAndTools;
+import remote.entity.Relais;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,12 +19,12 @@ public class SocketThread extends Thread {
 
     public SocketThread(Socket socket) {
         this.socket = socket;
-        if(Data.ENABLE_GPIO) this.gpio = new GPIO();
+        if(DataAndTools.ENABLE_GPIO) this.gpio = new GPIO();
         try {
             this.controlPrintWriter = new PrintWriter(socket.getOutputStream());
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            if(Data.DEBUG_FLAG) e.printStackTrace();
+            if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
         }
     }
 
@@ -30,39 +32,39 @@ public class SocketThread extends Thread {
         String received;
         boolean cancel = false;
 
-        Main.printLineWithTime("Connection established to " + socket.getInetAddress() + "!");
-        Main.printLineWithTime("Connected clients: " + Data.controlSockets.size());
+        DataAndTools.printLineWithTime("Connection established to " + socket.getInetAddress() + "!");
+        DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.controlSockets.size());
 
         while (!cancel) {
             try {
                 received = bufferedReader.readLine();
 
-                Main.printLineWithTime("Received from "+socket.getInetAddress()+": " + received);
+                DataAndTools.printLineWithTime("Received from "+socket.getInetAddress()+": " + received);
 
                 if (received.equals("info")) {
-                    controlPrintWriter.println(Main.createStatusString() + '\n');
+                    controlPrintWriter.println(DataAndTools.createStatusString() + '\n');
                     controlPrintWriter.flush();
                 } else {
-                    for (Relais r : Data.relaisArrayList) {
+                    for (Relais r : DataAndTools.relaisArrayList) {
                         if (received.equals(r.getName())) {
                             r.setEnabled(!r.isEnabled());
                             if(gpio != null) gpio.output(r.getGPIO_OUTPUT(),r.isEnabled());
-                            Main.notifyStatusChange();
+                            DataAndTools.notifyStatusChange();
                             break;
                         }
                     }
                 }
             } catch (Exception e) {
                 cancel = true;
-                if(Data.DEBUG_FLAG) e.printStackTrace();
-                Data.controlSockets.remove(socket);
+                if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
+                DataAndTools.controlSockets.remove(socket);
                 try {
                     socket.close();
                 } catch (IOException e1) {
-                    if(Data.DEBUG_FLAG) e1.printStackTrace();
+                    if(DataAndTools.DEBUG_FLAG) e1.printStackTrace();
                 }
-                Main.printLineWithTime("Lost socket connection with " + socket.getInetAddress().getHostAddress() + "!");
-                Main.printLineWithTime("Connected clients: " + Data.controlSockets.size());
+                DataAndTools.printLineWithTime("Lost socket connection with " + socket.getInetAddress().getHostAddress() + "!");
+                DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.controlSockets.size());
             }
 
         }

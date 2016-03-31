@@ -7,8 +7,8 @@ from threading import Thread
 import thread
 
 ###################### SETUP #####################
-#Name des remote.Relais und Command fuer Socket --> i[0]=name&command | i[1]=output-pin | i[2]=input-pin | i[3]=on/off-Flag
-relaisArray = [["Monitor Backlight",12,37,False],["remote.Relais 2",16,35,False],["remote.Relais 3",18,33,False],["remote.Relais 4",22,31,False]]
+#Name des remote.entity.Relais und Command fuer Socket --> i[0]=name&command | i[1]=output-pin | i[2]=input-pin | i[3]=on/off-Flag
+relaisArray = [["Monitor Backlight",12,37,False],["remote.entity.Relais 2",16,35,False],["remote.entity.Relais 3",18,33,False],["remote.entity.Relais 4",22,31,False]]
 
 ######################## DO NOT EDIT ###################
 # waehle GPIO.Pin modus

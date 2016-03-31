@@ -1,4 +1,4 @@
-package remote;
+package remote.entity;
 
 public class Relais {
     private String name;
