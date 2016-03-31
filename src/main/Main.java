@@ -21,7 +21,6 @@ public class Main {
         Data.relaisArrayList.add(new Relais("Relais 3",3,3,false));
         Data.relaisArrayList.add(new Relais("Relais 4",4,4,false));
 
-
         ControlServerThread controlServerThread = new ControlServerThread();
         StatusServerThread statusServerThread = new StatusServerThread();
 
