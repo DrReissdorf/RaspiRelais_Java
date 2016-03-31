@@ -24,7 +24,6 @@ public class SocketThread extends Thread {
         } catch (IOException e) {
             if(Data.DEBUG_FLAG) e.printStackTrace();
         }
-        run();
     }
 
     public void run() {

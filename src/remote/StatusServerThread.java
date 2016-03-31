@@ -12,17 +12,15 @@ public class StatusServerThread extends Thread {
 
         Main.printLineWithTime(getClass().getSimpleName()+" ===> Running!");
 
-        while (true) {
-            try {
-                serverSocket = new ServerSocket(Data.statusPort);
-                while (true) {
-                    Main.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
-                    socket = serverSocket.accept();
-                    Data.statusSockets.add(socket);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            serverSocket = new ServerSocket(Data.statusPort);
+            while (true) {
+                Main.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
+                socket = serverSocket.accept();
+                Data.statusSockets.add(socket);
             }
+        } catch (Exception e) {
+            if(Data.DEBUG_FLAG) e.printStackTrace();
         }
     }
 }

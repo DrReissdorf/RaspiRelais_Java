@@ -12,19 +12,18 @@ public class ControlServerThread extends Thread {
 
         Main.printLineWithTime(getClass().getSimpleName()+" ===> Running!");
 
-        while(true) {
-            try {
-                serverSocket = new ServerSocket(Data.controlPort);
-                while (true) {
-                    Main.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
-                    socket = serverSocket.accept();
-                    Data.controlSockets.add(socket);
-                    new SocketThread(socket);
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
+        try {
+            serverSocket = new ServerSocket(Data.controlPort);
+            while (true) {
+                Main.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
+                socket = serverSocket.accept();
+                Data.controlSockets.add(socket);
+                new SocketThread(socket).start();
             }
         }
+        catch (Exception e){
+            if(Data.DEBUG_FLAG) e.printStackTrace();
+        }
+
     }
 }
