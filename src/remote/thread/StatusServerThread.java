@@ -2,6 +2,7 @@ package remote.thread;
 
 import main.Main;
 import remote.DataAndTools;
+import remote.socket.StatusSocket;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,7 +10,7 @@ import java.net.Socket;
 public class StatusServerThread extends Thread {
     public void run() {
         ServerSocket serverSocket;
-        Socket socket;
+        StatusSocket statusSocket;
 
         DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Running!");
 
@@ -17,8 +18,9 @@ public class StatusServerThread extends Thread {
             serverSocket = new ServerSocket(DataAndTools.statusPort);
             while (true) {
                 DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
-                socket = serverSocket.accept();
-                DataAndTools.statusSockets.add(socket);
+                statusSocket = new StatusSocket(serverSocket.accept());
+                statusSocket.send(DataAndTools.createStatusString());
+                DataAndTools.statusSockets.add(statusSocket);
             }
         } catch (Exception e) {
             if(DataAndTools.DEBUG_FLAG) e.printStackTrace();

@@ -2,6 +2,7 @@ package remote.thread;
 
 import main.Main;
 import remote.DataAndTools;
+import remote.socket.ControlSocket;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,7 +10,7 @@ import java.net.Socket;
 public class ControlServerThread extends Thread {
     public void run() {
         ServerSocket serverSocket;
-        Socket socket;
+        ControlSocket controlSocket;
 
         DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Running!");
 
@@ -17,9 +18,9 @@ public class ControlServerThread extends Thread {
             serverSocket = new ServerSocket(DataAndTools.controlPort);
             while (true) {
                 DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
-                socket = serverSocket.accept();
-                DataAndTools.controlSockets.add(socket);
-                new SocketThread(socket).start();
+                controlSocket = new ControlSocket(serverSocket.accept());
+                DataAndTools.controlSockets.add(controlSocket);
+                new SocketThread(controlSocket).start();
             }
         }
         catch (Exception e){

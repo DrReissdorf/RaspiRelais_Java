@@ -34,7 +34,7 @@ public class GPIO {
                     if(event.getPin().getName().equals("GPIO "+relais.getGPIO_OUTPUT())) {
                         relais.setEnabled(!relais.isEnabled());
                         output(event.getPin(),relais.isEnabled());
-                        Main.notifyStatusChange();
+                        DataAndTools.notifyStatusChange();
                     }
                 }
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());

@@ -1,10 +1,10 @@
 package remote;
 
-import main.Main;
 import remote.entity.Relais;
+import remote.socket.ControlSocket;
+import remote.socket.SocketComm;
+import remote.socket.StatusSocket;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class DataAndTools {
     public static int controlPort = 18745;
     public static int statusPort = 18744;
-    public static ArrayList<Socket> controlSockets = new ArrayList<>();
-    public static ArrayList<Socket> statusSockets = new ArrayList<>();
+    public static ArrayList<ControlSocket> controlSockets = new ArrayList<>();
+    public static ArrayList<StatusSocket> statusSockets = new ArrayList<>();
     public static ArrayList<Relais> relaisArrayList = new ArrayList<>();
     public static boolean DEBUG_FLAG = true;
     public static boolean ENABLE_GPIO = false;
@@ -37,22 +37,8 @@ public class DataAndTools {
     }
 
     public static void notifyStatusChange() {
-        PrintWriter printWriter;
-
-        for (Socket socket : DataAndTools.statusSockets) {
-            try {
-                printWriter = new PrintWriter(socket.getOutputStream());
-                printWriter.println(createStatusString());
-                printWriter.flush();
-            } catch (IOException e) {
-                if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
-                DataAndTools.statusSockets.remove(socket);
-                try {
-                    socket.close();
-                } catch (IOException e1) {
-                    if(DataAndTools.DEBUG_FLAG) e1.printStackTrace();
-                }
-            }
+        for (StatusSocket statusSocket : DataAndTools.statusSockets) {
+            statusSocket.send(createStatusString());
         }
     }
 }
