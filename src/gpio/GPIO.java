@@ -9,6 +9,9 @@ import remote.entity.Relais;
 import java.util.ArrayList;
 
 public class GPIO {
+    private long timeout;
+    private final int bouncetime = 200;
+
     public void initGpioPins() {
         /* FILL RELAIS ARRAYLIST */
         DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(RaspiPin.GPIO_01,false),createInputPin(RaspiPin.GPIO_25)));
@@ -17,8 +20,10 @@ public class GPIO {
         DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(RaspiPin.GPIO_06,false),createInputPin(RaspiPin.GPIO_22)));
 
         for(Relais relais : DataAndTools.relaisArrayList) {
+            /* LISTENER FOR HARDWARE BUTTONS */
             relais.getGPIO_INPUT().addListener((GpioPinListenerDigital) event -> {
-                if(event.getState() == PinState.HIGH) {
+                if(event.getState()==PinState.HIGH && (System.currentTimeMillis()-timeout)>bouncetime) {
+                    timeout = System.currentTimeMillis();
                     if(DataAndTools.DEBUG_FLAG) DataAndTools.printLineWithTime(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
 
                     for(Relais r : DataAndTools.relaisArrayList) {
