@@ -16,8 +16,8 @@ public class DataAndTools {
     public static ArrayList<ControlSocket> controlSockets = new ArrayList<>();
     public static ArrayList<StatusSocket> statusSockets = new ArrayList<>();
     public static ArrayList<Relais> relaisArrayList = new ArrayList<>();
-    public static boolean DEBUG_FLAG = true;
-    public static boolean ENABLE_GPIO = false;
+    public static boolean DEBUG_FLAG = false;
+    public static boolean ENABLE_GPIO = true;
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
 
     public static void printLineWithTime(String text) {
@@ -28,7 +28,7 @@ public class DataAndTools {
         String toSend = "";
 
         for(Relais r : DataAndTools.relaisArrayList) {
-            toSend += r.getName()+","+r.isEnabled()+";";
+            toSend += r.getName()+","+r.getGPIO_OUTPUT().isHigh()+";";
         }
 
         toSend = toSend.substring(0,toSend.length()-1);

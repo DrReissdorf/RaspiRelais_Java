@@ -9,56 +9,48 @@ import remote.entity.Relais;
 import java.util.ArrayList;
 
 public class GPIO {
-    private GpioController gpioController;
-    private ArrayList<GpioPinDigitalOutput> gpioOutputs;
-    private ArrayList<GpioPinDigitalInput> gpioInputs;
-
-    public GPIO() {
-        gpioController = GpioFactory.getInstance();
-        gpioOutputs = new ArrayList<>();
-        gpioInputs = new ArrayList<>();
-    }
-
     public void initGpioPins() {
-        GpioPinDigitalOutput tempOutput;
-        GpioPinDigitalInput tempInput;
+        /* FILL RELAIS ARRAYLIST */
+        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(RaspiPin.GPIO_01,false),createInputPin(RaspiPin.GPIO_25)));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 2",createOutputPin(RaspiPin.GPIO_04,false),createInputPin(RaspiPin.GPIO_24)));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(RaspiPin.GPIO_05,false),createInputPin(RaspiPin.GPIO_23)));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(RaspiPin.GPIO_06,false),createInputPin(RaspiPin.GPIO_22)));
 
-        for(Relais r : DataAndTools.relaisArrayList) {
-            tempOutput = gpioController.provisionDigitalOutputPin(RaspiPin.getPinByName("GPIO "+r.getGPIO_OUTPUT()), PinState.LOW);
-            gpioOutputs.add(tempOutput);
+        for(Relais relais : DataAndTools.relaisArrayList) {
+            relais.getGPIO_INPUT().addListener((GpioPinListenerDigital) event -> {
+                if(event.getState() == PinState.HIGH) {
+                    if(DataAndTools.DEBUG_FLAG) DataAndTools.printLineWithTime(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
 
-            tempInput = gpioController.provisionDigitalInputPin(RaspiPin.getPinByName("GPIO "+r.getGPIO_OUTPUT()), PinPullResistance.PULL_DOWN);
-            tempInput.addListener((GpioPinListenerDigital) event -> {
-                // display pin state on console
-                for(Relais relais : DataAndTools.relaisArrayList) {
-                    if(event.getPin().getName().equals("GPIO "+relais.getGPIO_OUTPUT())) {
-                        relais.setEnabled(!relais.isEnabled());
-                        output(event.getPin(),relais.isEnabled());
-                        DataAndTools.notifyStatusChange();
+                    for(Relais r : DataAndTools.relaisArrayList) {
+                        if (event.getPin().getPin().getName().equals(r.getGPIO_INPUT().getPin().getName())) {
+                            setOutputPin(r.getGPIO_OUTPUT(), !r.getGPIO_OUTPUT().isHigh());
+                            DataAndTools.notifyStatusChange();
+                        }
                     }
                 }
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             });
-            gpioInputs.add(tempInput);
         }
 
     }
 
-    public boolean output(int pinNumber, boolean enable) {
-        for(GpioPinDigitalOutput pin : gpioOutputs) {
-            if(pin.getName().equals("GPIO "+pinNumber)) {
-                if(enable) pin.high();
-                else pin.low();
-                return true;
-            }
+    public GpioPinDigitalOutput createOutputPin(Pin pin, boolean enable) {
+        GpioPinDigitalOutput gpioOut;
+        if(enable) {
+            gpioOut = GpioFactory.getInstance().provisionDigitalOutputPin(pin, PinState.HIGH);
+        } else {
+            gpioOut = GpioFactory.getInstance().provisionDigitalOutputPin(pin, PinState.LOW);
         }
-        return false;
+        gpioOut.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
+        return gpioOut;
     }
 
-    public boolean output(GpioPin pin, boolean enable) {
-        GpioPinDigitalOutput outputPin = (GpioPinDigitalOutput) pin;
-        if(enable) outputPin.high();
-        else outputPin.low();
-        return true;
+    public GpioPinDigitalInput createInputPin(Pin pin) {
+        GpioPinDigitalInput gpioIn = GpioFactory.getInstance().provisionDigitalInputPin(pin, PinPullResistance.PULL_DOWN);
+        return gpioIn;
+    }
+
+    public void setOutputPin(GpioPinDigitalOutput digitalOutput, boolean enable) {
+        if(enable) digitalOutput.high();
+        else digitalOutput.low();
     }
 }

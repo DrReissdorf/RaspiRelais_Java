@@ -36,8 +36,7 @@ public class SocketThread extends Thread {
 
                 for (Relais r : DataAndTools.relaisArrayList) {
                     if (received.equals(r.getName())) {
-                        r.setEnabled(!r.isEnabled());
-                        if(gpio != null) gpio.output(r.getGPIO_OUTPUT(),r.isEnabled());
+                        if(gpio != null) gpio.setOutputPin(r.getGPIO_OUTPUT(),!r.getGPIO_OUTPUT().isHigh());
                         DataAndTools.notifyStatusChange();
                         break;
                     }

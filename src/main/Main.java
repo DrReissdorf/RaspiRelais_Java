@@ -1,5 +1,7 @@
 package main;
 
+import com.pi4j.io.gpio.*;
+import gpio.GPIO;
 import remote.DataAndTools;
 import remote.entity.Relais;
 import remote.thread.ControlServerThread;
@@ -7,11 +9,10 @@ import remote.thread.StatusServerThread;
 
 public class Main {
     public static void main(String args[]) throws InterruptedException {
-        /* FILL RELAIS ARRAYLIST */
-        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",1,1,false));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 2",2,2,false));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 3",3,3,false));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 4",4,4,false));
+        GPIO gpio = new GPIO();
+        gpio.initGpioPins();
+
+        createShutDownHook();
 
         ControlServerThread controlServerThread = new ControlServerThread();
         StatusServerThread statusServerThread = new StatusServerThread();
@@ -22,4 +23,19 @@ public class Main {
         controlServerThread.join();
         statusServerThread.join();
     }
+
+    private static void createShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+            @Override
+            public void run()  {
+                GpioFactory.getInstance().shutdown();
+                System.out.println("\nThanks for using the application");
+                System.out.println("Exiting...");
+
+            }
+        }));
+    }
+
+
 }
