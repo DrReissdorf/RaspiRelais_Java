@@ -27,17 +27,22 @@ public class GPIO {
                 if(event.getState()==PinState.HIGH && (System.currentTimeMillis()-timeout)>bouncetime) {
                     timeout = System.currentTimeMillis();
                     if(DataAndTools.DEBUG_FLAG) DataAndTools.printLineWithTime(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
-
-                    for(Relais r : DataAndTools.relaisArrayList) {
-                        if (event.getPin().getPin().getName().equals(r.getGPIO_INPUT().getPin().getName())) {
-                            setOutputPin(r.getGPIO_OUTPUT(), !r.getGPIO_OUTPUT().isHigh());
-                            DataAndTools.notifyStatusChange();
-                        }
-                    }
+                    GpioPinDigitalOutput pin = getOutputPin(event.getPin().getName());
+                    setOutputPin(pin, !pin.isHigh());
+                    DataAndTools.notifyStatusChange();
                 }
             });
         }
 
+    }
+
+    private GpioPinDigitalOutput getOutputPin(String name) {
+        for(Relais r : DataAndTools.relaisArrayList) {
+            if (name.equals(r.getGPIO_INPUT().getPin().getName())) {
+                return r.getGPIO_OUTPUT();
+            }
+        }
+        return null;
     }
 
     public GpioPinDigitalOutput createOutputPin(Pin pin, boolean enable) {
