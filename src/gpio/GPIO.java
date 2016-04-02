@@ -6,18 +6,27 @@ import main.Main;
 import remote.DataAndTools;
 import remote.entity.Relais;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static remote.DataAndTools.getPin;
 
 public class GPIO {
     private long timeout;
     private final int bouncetime = 200;
+    private GpioController gpioController;
+
+    public GPIO() {
+        gpioController = GpioFactory.getInstance();
+    }
 
     public void initGpioPins() {
         /* FILL RELAIS ARRAYLIST */
-        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(RaspiPin.GPIO_01,false),createInputPin(RaspiPin.GPIO_25)));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 2",createOutputPin(RaspiPin.GPIO_04,false),createInputPin(RaspiPin.GPIO_24)));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(RaspiPin.GPIO_05,false),createInputPin(RaspiPin.GPIO_23)));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(RaspiPin.GPIO_06,false),createInputPin(RaspiPin.GPIO_22)));
+        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(getPin(12),false),createInputPin(getPin(37))));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 2",createOutputPin(getPin(16),false),createInputPin(getPin(35))));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(getPin(18),false),createInputPin(getPin(33))));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(getPin(22),false),createInputPin(getPin(31))));
 
         for(Relais relais : DataAndTools.relaisArrayList) {
             /* LISTENER FOR HARDWARE BUTTONS */
@@ -41,16 +50,16 @@ public class GPIO {
     public GpioPinDigitalOutput createOutputPin(Pin pin, boolean enable) {
         GpioPinDigitalOutput gpioOut;
         if(enable) {
-            gpioOut = GpioFactory.getInstance().provisionDigitalOutputPin(pin, PinState.HIGH);
+            gpioOut = gpioController.provisionDigitalOutputPin(pin, PinState.HIGH);
         } else {
-            gpioOut = GpioFactory.getInstance().provisionDigitalOutputPin(pin, PinState.LOW);
+            gpioOut = gpioController.provisionDigitalOutputPin(pin, PinState.LOW);
         }
         gpioOut.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
         return gpioOut;
     }
 
     public GpioPinDigitalInput createInputPin(Pin pin) {
-        GpioPinDigitalInput gpioIn = GpioFactory.getInstance().provisionDigitalInputPin(pin, PinPullResistance.PULL_DOWN);
+        GpioPinDigitalInput gpioIn = gpioController.provisionDigitalInputPin(pin, PinPullResistance.PULL_DOWN);
         return gpioIn;
     }
 

@@ -25,15 +25,11 @@ public class Main {
     }
 
     private static void createShutDownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            GpioFactory.getInstance().shutdown();
+            System.out.println("\nThanks for using the application");
+            System.out.println("Exiting...");
 
-            @Override
-            public void run()  {
-                GpioFactory.getInstance().shutdown();
-                System.out.println("\nThanks for using the application");
-                System.out.println("Exiting...");
-
-            }
         }));
     }
 
