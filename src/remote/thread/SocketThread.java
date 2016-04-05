@@ -1,6 +1,7 @@
 package remote.thread;
 
 import gpio.GPIO;
+import main.Main;
 import remote.DataAndTools;
 import remote.socket.ControlSocket;
 import remote.entity.Relais;
@@ -45,6 +46,8 @@ public class SocketThread extends Thread {
                 cancel = true;
                 if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
                 controlSocket.deleteSocketFromList();
+                Main.logger.info(getClass().getSimpleName()+" ===> Lost socket connection with " + controlSocket.getIP() + "!");
+                Main.logger.info(getClass().getSimpleName()+" ===> Connected clients: " + DataAndTools.controlSockets.size());
                 DataAndTools.printLineWithTime("Lost socket connection with " + controlSocket.getIP() + "!");
                 DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.controlSockets.size());
             }

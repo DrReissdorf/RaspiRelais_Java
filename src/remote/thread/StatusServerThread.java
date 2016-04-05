@@ -19,6 +19,7 @@ public class StatusServerThread extends Thread {
             while (true) {
                 DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
                 statusSocket = new StatusSocket(serverSocket.accept());
+                Main.logger.info(getClass().getSimpleName()+" ===> "+statusSocket.getIP()+" connected!");
                 statusSocket.send(DataAndTools.createStatusString());
                 DataAndTools.statusSockets.add(statusSocket);
             }

@@ -2,8 +2,11 @@ package gpio;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import main.Main;
 import remote.DataAndTools;
 import remote.entity.Relais;
+
+import static gpio.WiringPi_To_HardWare_GPIO.getPin;
 
 public class GPIO {
     private long timeout;
@@ -16,17 +19,17 @@ public class GPIO {
 
     public void initGpioPins() {
         /* FILL RELAIS ARRAYLIST */
-        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(DataAndTools.getPin(12),false),createInputPin(DataAndTools.getPin(37))));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 2",createOutputPin(DataAndTools.getPin(16),false),createInputPin(DataAndTools.getPin(35))));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(DataAndTools.getPin(18),false),createInputPin(DataAndTools.getPin(33))));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(DataAndTools.getPin(22),false),createInputPin(DataAndTools.getPin(31))));
+        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(getPin(12),false),createInputPin(getPin(37))));
+        DataAndTools.relaisArrayList.add(new Relais("Stehlampe",createOutputPin(getPin(16),false),createInputPin(getPin(35))));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(getPin(18),false),createInputPin(getPin(33))));
+        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(getPin(22),false),createInputPin(getPin(31))));
 
         for(Relais relais : DataAndTools.relaisArrayList) {
             /* LISTENER FOR HARDWARE BUTTONS */
             relais.getGPIO_INPUT().addListener((GpioPinListenerDigital) event -> {
                 if(event.getState()==PinState.HIGH && (System.currentTimeMillis()-timeout)>bouncetime) {
                     timeout = System.currentTimeMillis();
-                    if(DataAndTools.DEBUG_FLAG) DataAndTools.printLineWithTime(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
+                    Main.logger.info(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
                     GpioPinDigitalOutput pin = getOutputPin(event.getPin().getName());
                     setOutputPin(pin, !pin.isHigh());
                     DataAndTools.notifyStatusChange();

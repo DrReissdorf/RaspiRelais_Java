@@ -19,6 +19,7 @@ public class ControlServerThread extends Thread {
             while (true) {
                 DataAndTools.printLineWithTime(getClass().getSimpleName()+" ===> Waiting for connections!");
                 controlSocket = new ControlSocket(serverSocket.accept());
+                Main.logger.info(getClass().getSimpleName()+" ===> "+controlSocket.getIP()+" connected!");
                 DataAndTools.controlSockets.add(controlSocket);
                 new SocketThread(controlSocket).start();
             }

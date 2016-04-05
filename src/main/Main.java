@@ -2,13 +2,30 @@ package main;
 
 import com.pi4j.io.gpio.*;
 import gpio.GPIO;
-import remote.DataAndTools;
-import remote.entity.Relais;
 import remote.thread.ControlServerThread;
 import remote.thread.StatusServerThread;
 
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 public class Main {
+    public static Logger logger;
+    public static FileHandler fh;
+
     public static void main(String args[]) throws InterruptedException {
+        /****** LOGGING ******/
+        logger = Logger.getLogger("MyLog");
+        try {
+            fh = new FileHandler("relais_java.log");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        logger.addHandler(fh);
+        fh.setFormatter(new SimpleFormatter());
+        /**********************/
+
         GPIO gpio = new GPIO();
         gpio.initGpioPins();
 
