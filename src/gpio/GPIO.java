@@ -19,7 +19,7 @@ public class GPIO {
 
     public void initGpioPins() {
         /* FILL RELAIS ARRAYLIST */
-        DataAndTools.relaisArrayList.add(new Relais("Monitor Backlight",createOutputPin(getPin(12),false),createInputPin(getPin(37))));
+        DataAndTools.relaisArrayList.add(new Relais("Monitor LED-Leiste",createOutputPin(getPin(12),false),createInputPin(getPin(37))));
         DataAndTools.relaisArrayList.add(new Relais("Stehlampe",createOutputPin(getPin(16),false),createInputPin(getPin(35))));
         DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(getPin(18),false),createInputPin(getPin(33))));
         DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(getPin(22),false),createInputPin(getPin(31))));
