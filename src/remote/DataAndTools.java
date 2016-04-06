@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class DataAndTools {
     public static int controlPort = 18745;
     public static int statusPort = 18744;
+    public static int udpPort = 18746;
     public static ArrayList<ControlSocket> controlSockets = new ArrayList<>();
     public static ArrayList<StatusSocket> statusSockets = new ArrayList<>();
     public static ArrayList<Relais> relaisArrayList = new ArrayList<>();

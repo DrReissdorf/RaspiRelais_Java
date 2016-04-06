@@ -1,6 +1,7 @@
 package main;
 
 import com.pi4j.io.gpio.*;
+import discovery.UdpServerThread;
 import gpio.GPIO;
 import remote.thread.ControlServerThread;
 import remote.thread.StatusServerThread;
@@ -31,12 +32,15 @@ public class Main {
 
         createShutDownHook();
 
+        UdpServerThread udpServerThread = new UdpServerThread();
         ControlServerThread controlServerThread = new ControlServerThread();
         StatusServerThread statusServerThread = new StatusServerThread();
 
+        udpServerThread.start();
         controlServerThread.start();
         statusServerThread.start();
 
+        udpServerThread.join();
         controlServerThread.join();
         statusServerThread.join();
     }
