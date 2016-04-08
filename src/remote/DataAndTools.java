@@ -19,7 +19,7 @@ public class DataAndTools {
     public static ArrayList<ControlSocket> controlSockets = new ArrayList<>();
     public static ArrayList<StatusSocket> statusSockets = new ArrayList<>();
     public static ArrayList<Relais> relaisArrayList = new ArrayList<>();
-    public static boolean DEBUG_FLAG = true;
+    public static boolean DEBUG_FLAG = false;
     public static boolean ENABLE_GPIO = true;
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
 

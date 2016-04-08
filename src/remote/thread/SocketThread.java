@@ -32,9 +32,8 @@ public class SocketThread extends Thread {
         while (!cancel) {
             try {
                 received = controlSocket.receive();
-                controlSocket.send("command received");
 
-                DataAndTools.printLineWithTime("Received from "+ controlSocket.getIP()+": " + received+". Answered with ok!");
+                DataAndTools.printLineWithTime("Received from "+ controlSocket.getIP()+": " + received);
 
                 for (Relais r : DataAndTools.relaisArrayList) {
                     if (received.equals(r.getName())) {
