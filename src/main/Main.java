@@ -3,8 +3,7 @@ package main;
 import com.pi4j.io.gpio.*;
 import discovery.UdpServerThread;
 import gpio.GPIO;
-import remote.thread.ControlServerThread;
-import remote.thread.StatusServerThread;
+import remote.thread.AcceptSocketsThread;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -33,16 +32,13 @@ public class Main {
         createShutDownHook();
 
         UdpServerThread udpServerThread = new UdpServerThread();
-        ControlServerThread controlServerThread = new ControlServerThread();
-        StatusServerThread statusServerThread = new StatusServerThread();
+        AcceptSocketsThread acceptSocketsThread = new AcceptSocketsThread();
 
         udpServerThread.start();
-        controlServerThread.start();
-        statusServerThread.start();
+        acceptSocketsThread.start();
 
         udpServerThread.join();
-        controlServerThread.join();
-        statusServerThread.join();
+        acceptSocketsThread.join();
     }
 
     private static void createShutDownHook() {
@@ -50,7 +46,6 @@ public class Main {
             GpioFactory.getInstance().shutdown();
             System.out.println("\nThanks for using the application");
             System.out.println("Exiting...");
-
         }));
     }
 

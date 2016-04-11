@@ -42,8 +42,4 @@ public class SocketComm {
     public String getIP() {
         return socket.getInetAddress().getHostAddress();
     }
-
-    public String getHostname() {
-        return socket.getInetAddress().getHostName();
-    }
 }

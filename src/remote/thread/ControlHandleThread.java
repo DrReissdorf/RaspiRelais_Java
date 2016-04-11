@@ -13,11 +13,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketThread extends Thread {
+public class ControlHandleThread extends Thread {
     private ControlSocket controlSocket;
     private GPIO gpio;
 
-    public SocketThread(ControlSocket controlSocket) {
+    public ControlHandleThread(ControlSocket controlSocket) {
         this.controlSocket = controlSocket;
         if(DataAndTools.ENABLE_GPIO) this.gpio = new GPIO();
     }
@@ -27,7 +27,7 @@ public class SocketThread extends Thread {
         boolean cancel = false;
 
         DataAndTools.printLineWithTime("Connection established to " + controlSocket.getIP() + "!");
-        DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.controlSockets.size());
+        DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.socketHashMap.size());
 
         while (!cancel) {
             try {
@@ -45,18 +45,13 @@ public class SocketThread extends Thread {
             } catch (Exception e) {
                 cancel = true;
                 if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
-                controlSocket.deleteSocketFromList();
+                DataAndTools.socketHashMap.remove(controlSocket);
                 Main.logger.info(getClass().getSimpleName()+" ===> Lost socket connection with " + controlSocket.getIP() + "!");
-                Main.logger.info(getClass().getSimpleName()+" ===> Connected clients: " + DataAndTools.controlSockets.size());
+                Main.logger.info(getClass().getSimpleName()+" ===> Connected clients: " + DataAndTools.socketHashMap.size());
                 DataAndTools.printLineWithTime("Lost socket connection with " + controlSocket.getIP() + "!");
-                DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.controlSockets.size());
+                DataAndTools.printLineWithTime("Connected clients: " + DataAndTools.socketHashMap.size());
             }
 
         }
     }
-
-
-
-
-
 }

@@ -11,13 +11,13 @@ import java.net.Socket;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DataAndTools {
     public static int controlPort = 18745;
     public static int statusPort = 18744;
     public static int udpPort = 18746;
-    public static ArrayList<ControlSocket> controlSockets = new ArrayList<>();
-    public static ArrayList<StatusSocket> statusSockets = new ArrayList<>();
+    public static HashMap<ControlSocket, StatusSocket> socketHashMap = new HashMap<>();
     public static ArrayList<Relais> relaisArrayList = new ArrayList<>();
     public static boolean DEBUG_FLAG = false;
     public static boolean ENABLE_GPIO = true;
@@ -40,8 +40,8 @@ public class DataAndTools {
     }
 
     public static void notifyStatusChange() {
-        for (StatusSocket statusSocket : DataAndTools.statusSockets) {
-            statusSocket.send(createStatusString());
+        for (ControlSocket controlSocket : socketHashMap.keySet()) {
+            socketHashMap.get(controlSocket).send(createStatusString());
         }
     }
 }
