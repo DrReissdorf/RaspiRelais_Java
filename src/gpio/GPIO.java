@@ -6,6 +6,9 @@ import main.Main;
 import remote.DataAndTools;
 import remote.entity.Relais;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import static gpio.WiringPi_To_HardWare_GPIO.getPin;
 
 public class GPIO {
@@ -18,11 +21,22 @@ public class GPIO {
     }
 
     public void initGpioPins() {
-        /* FILL RELAIS ARRAYLIST */
-        DataAndTools.relaisArrayList.add(new Relais("Monitor LED-Leiste",createOutputPin(getPin(12),false),createInputPin(getPin(37))));
-        DataAndTools.relaisArrayList.add(new Relais("Stehlampe",createOutputPin(getPin(16),false),createInputPin(getPin(35))));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 3",createOutputPin(getPin(18),false),createInputPin(getPin(33))));
-        DataAndTools.relaisArrayList.add(new Relais("Relais 4",createOutputPin(getPin(22),false),createInputPin(getPin(31))));
+
+        /****** READ GPIO PINS FROM CONFIG FILE **********/
+        ArrayList<String[]> gpioInitStrings = null;
+        try {
+            gpioInitStrings = new GpioSetup().readConfig("gpio-setup.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /**************************************************/
+
+        for(String[] stringArray : gpioInitStrings) {
+            DataAndTools.relaisArrayList.add(new Relais(
+                    stringArray[0],
+                    createOutputPin(getPin(Integer.valueOf(stringArray[1])),false),
+                    createInputPin(getPin(Integer.valueOf(stringArray[2])))));
+        }
 
         for(Relais relais : DataAndTools.relaisArrayList) {
             /* LISTENER FOR HARDWARE BUTTONS */
