@@ -22,6 +22,7 @@ public class DataAndTools {
     public static boolean DEBUG_FLAG = false;
     public static boolean ENABLE_GPIO = true;
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
+    public static String workingDirectory;
 
     public static void printLineWithTime(String text) {
         System.out.println(ZonedDateTime.now().format(format) + " -- "+text);

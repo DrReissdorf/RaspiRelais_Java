@@ -6,7 +6,10 @@ import main.Main;
 import remote.DataAndTools;
 import remote.entity.Relais;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
 import java.util.ArrayList;
 
 import static gpio.WiringPi_To_HardWare_GPIO.getPin;
@@ -25,7 +28,7 @@ public class GPIO {
         /****** READ GPIO PINS FROM CONFIG FILE **********/
         ArrayList<String[]> gpioInitStrings = null;
         try {
-            gpioInitStrings = new GpioSetup().readConfig("gpio-setup.txt");
+            gpioInitStrings = new GpioSetup().readConfig(DataAndTools.workingDirectory+"/gpio-setup.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
