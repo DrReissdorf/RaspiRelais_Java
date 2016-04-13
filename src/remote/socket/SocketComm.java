@@ -15,7 +15,7 @@ public class SocketComm {
     private PrintWriter pw;
     private BufferedReader bufferedReader;
 
-    protected SocketComm(Socket socket) {
+    public SocketComm(Socket socket) {
         this.socket = socket;
         try {
             pw = new PrintWriter(socket.getOutputStream());
