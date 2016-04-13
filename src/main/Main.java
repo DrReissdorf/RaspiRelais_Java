@@ -1,12 +1,9 @@
 package main;
 
 import com.pi4j.io.gpio.*;
-import discovery.UdpServerThread;
 import gpio.GPIO;
 import remote.DataAndTools;
-import remote.thread.AcceptSocketsThread;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -45,14 +42,7 @@ public class Main {
 
         createShutDownHook();
 
-        UdpServerThread udpServerThread = new UdpServerThread();
-        AcceptSocketsThread acceptSocketsThread = new AcceptSocketsThread();
-
-        udpServerThread.start();
-        acceptSocketsThread.start();
-
-        udpServerThread.join();
-        acceptSocketsThread.join();
+        ServerSingleton.getInstance().startServer();
     }
 
     private static void createShutDownHook() {
@@ -62,6 +52,4 @@ public class Main {
             System.out.println("Exiting...");
         }));
     }
-
-
 }

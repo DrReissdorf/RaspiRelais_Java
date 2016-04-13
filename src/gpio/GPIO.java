@@ -5,11 +5,8 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import main.Main;
 import remote.DataAndTools;
 import remote.entity.Relais;
-
-import java.io.File;
+import main.ServerSingleton;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.CodeSource;
 import java.util.ArrayList;
 
 import static gpio.WiringPi_To_HardWare_GPIO.getPin;
@@ -49,7 +46,7 @@ public class GPIO {
                     Main.logger.info(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
                     GpioPinDigitalOutput pin = getOutputPin(event.getPin().getName());
                     setOutputPin(pin, !pin.isHigh());
-                    DataAndTools.notifyStatusChange();
+                    ServerSingleton.getInstance().notifyStatusChange();
                 }
             });
         }
