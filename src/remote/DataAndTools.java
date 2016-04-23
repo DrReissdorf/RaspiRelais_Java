@@ -17,12 +17,15 @@ public class DataAndTools {
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("HH:mm");
     public static String workingDirectory;
 
+    public static final String PROTOCOL_RELAY = "relay";
+    public static final String PROTOCOL_TEMP = "temp";
+
     public static void printLineWithTime(String text) {
         System.out.println(ZonedDateTime.now().format(format) + " -- "+text);
     }
 
     public static String createStatusString() {
-        String toSend = "";
+        String toSend = PROTOCOL_RELAY+"%";
 
         for(Relais r : DataAndTools.relaisArrayList) {
             toSend += r.getName()+","+r.getGPIO_OUTPUT().isHigh()+";";

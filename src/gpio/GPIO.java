@@ -46,7 +46,7 @@ public class GPIO {
                     Main.logger.info(" --> INTERRUPT: " + event.getPin() + " STATE: "+event.getState());
                     GpioPinDigitalOutput pin = getOutputPin(event.getPin().getName());
                     setOutputPin(pin, !pin.isHigh());
-                    ServerSingleton.getInstance().notifyStatusChange();
+                    ServerSingleton.getInstance().notifyGpioChange();
                 }
             });
         }

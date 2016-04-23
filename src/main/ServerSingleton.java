@@ -30,7 +30,7 @@ public class ServerSingleton {
         acceptConnectionsThread.join();
     }
 
-    public void notifyStatusChange() {
+    public void notifyGpioChange() {
         for (SocketComm socketComm : socketComms) {
             socketComm.send(DataAndTools.createStatusString());
         }
