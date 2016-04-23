@@ -21,6 +21,7 @@ public class ConnectionHandlerThread extends Thread {
     public void run() {
         String received;
         boolean cancel = false;
+        String[] command;
 
         DataAndTools.printLineWithTime("Connection established to " + socketComm.getIP() + "!");
         DataAndTools.printLineWithTime("Connected clients: " + serverInstance.getNumberOfConnectedClients());
@@ -32,16 +33,26 @@ public class ConnectionHandlerThread extends Thread {
         while (!cancel) {
             try {
                 received = socketComm.receive();
+                command = received.split(";");
+
+                switch(command[0]) {
+                    case "relay":
+                        for (Relais r : DataAndTools.relaisArrayList) {
+                            if (command[1].equals(r.getName())) {
+                                if(gpio != null) gpio.setOutputPin(r.getGPIO_OUTPUT(),!r.getGPIO_OUTPUT().isHigh());
+                                serverInstance.notifyStatusChange();
+                                break;
+                            }
+                        }
+                        break;
+
+                    case "temp":
+                        break;
+                }
 
                 DataAndTools.printLineWithTime("Received from "+ socketComm.getIP()+": " + received);
 
-                for (Relais r : DataAndTools.relaisArrayList) {
-                    if (received.equals(r.getName())) {
-                        if(gpio != null) gpio.setOutputPin(r.getGPIO_OUTPUT(),!r.getGPIO_OUTPUT().isHigh());
-                        serverInstance.notifyStatusChange();
-                        break;
-                    }
-                }
+
             } catch (Exception e) {
                 cancel = true;
                 if(DataAndTools.DEBUG_FLAG) e.printStackTrace();
