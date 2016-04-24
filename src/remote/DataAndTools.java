@@ -2,7 +2,10 @@ package remote;
 
 import remote.entity.Relais;
 import remote.socket.SocketComm;
+import temperature.TempReader;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ public class DataAndTools {
     public static final String PROTOCOL_RELAY = "relay";
     public static final String PROTOCOL_TEMP = "temp";
 
+    private static final String temperatureFilePath = "/sys/bus/w1/devices/28-800000036b22/w1_slave";
+
     public static void printLineWithTime(String text) {
         System.out.println(ZonedDateTime.now().format(format) + " -- "+text);
     }
@@ -36,5 +41,21 @@ public class DataAndTools {
         return toSend;
     }
 
+    public static String createTemperatureString() {
+        String toSend = DataAndTools.PROTOCOL_TEMP+"%";
 
+        ArrayList<String> strings = null;
+        try {
+            strings = TempReader.readTemps(new File(temperatureFilePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for(int i=0 ; i<strings.size() ; i++) {
+            if(i < strings.size()-1) toSend += strings.get(i)+";";
+            else toSend += strings.get(i);
+        }
+
+        return toSend;
+    }
 }

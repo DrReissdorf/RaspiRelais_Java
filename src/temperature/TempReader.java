@@ -33,7 +33,7 @@ public class TempReader {
             }
         }
 
-        System.out.println(strings.size()+" Temperature-Sensors installed! Returning ArrayList of values...");
+        //System.out.println(strings.size()+" Temperature-Sensors installed! Returning ArrayList of values...");
         return strings;
     }
 }
