@@ -13,7 +13,7 @@ import static gpio.WiringPi_To_HardWare_GPIO.getPin;
 
 public class GPIO {
     private long timeout;
-    private final int bouncetime = 200;
+    private final int bouncetime = 100;
     private GpioController gpioController;
 
     public GPIO() {
