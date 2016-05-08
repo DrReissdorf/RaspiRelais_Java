@@ -12,7 +12,6 @@ public class TempReader {
         String toadd = "";
         String temporary;
 
-
         BufferedReader br = new BufferedReader(new FileReader(file));
 
         while((temporary = br.readLine()) != null) {
